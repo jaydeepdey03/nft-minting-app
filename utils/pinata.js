@@ -8,30 +8,75 @@ const FormData = require('form-data')
 export const pinFileToIPFS = async () => {
     const formData = new FormData();
     const src = "../Files/pic1.jpg";
-    
+
     const file = fs.createReadStream(src)
     formData.append('file', file)
-    
+
     const metadata = JSON.stringify({
-      name: 'File name',
+        name: 'testname',
+        keyvalues: {
+            exampleKey: 'exampleValue'
+        }
     });
     formData.append('pinataMetadata', metadata);
-    
+
     const options = JSON.stringify({
-      cidVersion: 0,
+        cidVersion: 0,
     })
     formData.append('pinataOptions', options);
 
-    try{
-      const res = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
+    return axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
         maxBodyLength: "Infinity",
         headers: {
-          'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
-          Authorization: JWT
+            'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+            pinata_api_key: pinataApiKey,
+            pinata_secret: apiSecret,
         }
-      });
-      console.log(res.data);
-    } catch (error) {
-      console.log(error);
-    }
+    }).then(res=>{
+        console.log('Image Uploaded', res.data.IpfsHash)
+        return {
+            success: true,
+            pinataUrl: 'https://gateway.pinata.cloud/ipfs/' + res.data.IpfsHash
+        }
+    }).catch(err=>{
+        console.log(err)
+        return {
+            error: err.message,
+            success: false
+        }
+    })
+}
+
+
+export const pinJSONtoIPFS = async () => {
+
+    const data = JSON.stringify({
+        "pinataOptions": {
+            "cidVersion": 1
+        },
+        "pinataMetadata": {
+            "name": "testing",
+            "keyvalues": {
+                "customKey": "customValue",
+                "customKey2": "customValue2"
+            }
+        },
+        "pinataContent": {
+            "somekey": "somevalue"
+        }
+    });
+
+    const config = {
+        method: 'post',
+        url: 'https://api.pinata.cloud/pinning/pinJSONToIPFS',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${pinataJwt}`,
+        },
+        data: data
+    };
+
+    const res = await axios(config);
+
+    console.log(res.data);
 }
