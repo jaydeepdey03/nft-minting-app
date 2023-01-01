@@ -2,13 +2,14 @@ import { useState } from "react"
 import { ethers } from "ethers"
 import Marketplace from '../utils/Marketplace.json'
 import { pinFileToIPFS, pinJSONtoIPFS } from "../utils/pinata"
-import Swal from "sweetalert2"
-import 'sweetalert2/src/sweetalert2.scss'
+import Spinner from "../components/Spinner"
+import Navbar from "../components/Navbar"
 
 const SellNFT = () => {
     const [fileUrl, setFileUrl] = useState(null)
     const [formData, setFormData] = useState({ name: '', description: '', price: '' })
     const [message, setMessage] = useState('')
+    const [loading, setLoading] = useState(false)
 
     const handleOnchange = (e) => {
         setFormData(prevData => {
@@ -54,30 +55,13 @@ const SellNFT = () => {
             let listingPrice = await contract.getListPrice()
             listingPrice = listingPrice.toString()
             const price = ethers.utils.parseUnits(formData.price, 'ether')
-            console.log(contract)
-            console.log(formData)
-            console.log(fileUrl)
-
-
-
-            // Swal.fire({
-            //     title: 'Success',
-            //     text: 'Do you want to continue',
-            //     icon: 'error',
-            //     confirmButtonText: 'Cool'
-            // })
 
             // create NFT
-
+            setLoading(true)
             let transaction = await contract.createToken(metadataUrl, price, { value: listingPrice })
             await transaction.wait()
-            Swal.fire({
-                title: 'Success',
-                text: 'Do you want to continue',
-                icon: 'error',
-                confirmButtonText: 'Cool'
-            })
-
+            setLoading(false)
+            
             setMessage('')
             setFormData({ name: '', description: '', price: '' })
         }
@@ -88,6 +72,7 @@ const SellNFT = () => {
 
     return (
         <>
+            <Navbar />
             <div className="flex flex-col place-items-center h-full w-fulls mt-16" id="nftForm">
                 <form className="bg-white shadow-md rounded px-8 pt-4 pb-8">
                     <h3 className="text-center font-bold text-purple-500 mb-8">Upload your NFT to the marketplace</h3>
@@ -108,7 +93,8 @@ const SellNFT = () => {
                         <input type="file" onChange={OnFileChange}></input>
                     </div>
                     <br></br>
-                    <div className="text-green text-center">{message}</div>
+                    {/* <div className="text-green text-center">{message}</div> */}
+                    {loading ? <Spinner /> : <div style={{ display: 'none' }}></div>}
                     <button onClick={listNft} className="font-bold mt-10 w-full bg-purple-500 text-white rounded p-2 shadow-lg">
                         List NFT
                     </button>
