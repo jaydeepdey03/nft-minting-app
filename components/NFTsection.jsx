@@ -10,7 +10,7 @@ const NFTsection = () => {
     const [fetchedItem, setFetchedItem] = useState([])
     const [loading, setLoading] = useState(false)
 
-    const {chainId} = useContextFetch()
+    const { chainId, account, connectWallet } = useContextFetch()
 
     const getAllNFT = async () => {
         const provider = new ethers.providers.Web3Provider(window.ethereum)
@@ -39,27 +39,42 @@ const NFTsection = () => {
     }
 
     useEffect(() => {
-        setLoading(true)
-        if(chainId == '0x13881'){
-            getAllNFT()
-        }
-        setLoading(false)
-    }, [])
+       setLoading(true)
+        chainId === '0x13881' && getAllNFT()
+        setTimeout(() => {
+            setLoading(false)
+        }, 2000);
+    }, [chainId])
+
+    if (account === '') {
+        return (
+            <div className="flex flex-col place-items-center mt-20 h-[90vh]">
+                <button onClick={connectWallet} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Connect to Wallet
+                </button>
+            </div>
+        )
+    }
+
+    if(loading === true){
+        return (
+            <div className="flex flex-col place-items-center h-[90vh]">
+                <Spinner />
+            </div>
+        )
+    }
 
     return (
         <div className="flex flex-col place-items-center mt-20 h-[90vh]">
             <div className="md:text-xl font-bold text-white">
                 Listed NFTs
             </div>
-            {loading ? <div className="h-full w-screen"><Spinner /></div> :
-                <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
-                    {fetchedItem.map((value, index) => {
-                        return <NFT data={value} key={index}></NFT>;
-                    })}
-                </div>}
-            <Link href="/sellnft" className="flex items-center justify-center w-[10rem] h-[3rem] bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full mt-10">
-                Mint your NFT
-            </Link>
+
+            <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
+                {fetchedItem.map((value, index) => {
+                    return <NFT data={value} key={index}></NFT>;
+                })}
+            </div>
         </div>
     )
 }

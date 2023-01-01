@@ -26,7 +26,7 @@ const Navbar = () => {
                             account && (chainId !== '0x13881') && (
                                 <>
                                     <button onClick={switchNetwork} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                        Switch Networkx
+                                        Switch Network
                                     </button>
                                     <p>Incompatible Network</p>
                                 </>
