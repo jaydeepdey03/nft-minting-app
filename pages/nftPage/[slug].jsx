@@ -88,8 +88,8 @@ const NFTPage = () => {
                         Seller: <span className="text-sm">{fetchedItem.seller}</span>
                     </div>
                     <div>
-                        {address == fetchedItem.owner ?
-                            <button className="enableEthereumButton bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm" onClick={() => buyNFT(tokenId)}>Buy this NFT</button>
+                        {!address == fetchedItem.owner || !address == fetchedItem.seller?
+                            <button className="enableEthereumButton bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm" onClick={() => buyNFT(tokenId)}>Buy thNFTis </button>
                             : <div className="text-emerald-700">You are the owner of this NFT</div>
                         }
                     </div>

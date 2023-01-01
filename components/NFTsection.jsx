@@ -4,10 +4,13 @@ import { useState, useEffect } from "react"
 import NFT from "./NFT"
 import Link from 'next/link'
 import Spinner from "./Spinner"
+import useContextFetch from "../hooks/useContextFetch"
 
 const NFTsection = () => {
     const [fetchedItem, setFetchedItem] = useState([])
     const [loading, setLoading] = useState(false)
+
+    const {chainId} = useContextFetch()
 
     const getAllNFT = async () => {
         const provider = new ethers.providers.Web3Provider(window.ethereum)
@@ -37,9 +40,9 @@ const NFTsection = () => {
 
     useEffect(() => {
         setLoading(true)
-        setTimeout(() => {
+        if(chainId == '0x13881'){
             getAllNFT()
-        }, 7000);
+        }
         setLoading(false)
     }, [])
 
