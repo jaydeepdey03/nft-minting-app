@@ -21,7 +21,7 @@ const SellNFT = () => {
         let file = e.target.files[0]
         try {
             const res = await pinFileToIPFS(file)
-            console.log('file uploaded to ' + res.pinataURL)
+            // console.log('file uploaded to ' + res.pinataURL)
             setFileUrl(res.pinataURL)
         }
         catch (err) {
@@ -36,7 +36,7 @@ const SellNFT = () => {
 
         try {
             const res = await pinJSONtoIPFS(nftJson)
-            console.log("Uploaded JSON to Pinata: ", res)
+            // console.log("Uploaded JSON to Pinata: ", res)
             return res.pinataURL;
         } catch (err) {
             console.log(err)

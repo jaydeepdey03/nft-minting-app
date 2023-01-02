@@ -12,7 +12,6 @@ const NFTPage = () => {
     const [address, setAddress] = useState("Ox");
     const router = useRouter()
     const { slug } = router.query
-    console.log(slug)
 
 
     const getNFTData = async (tokenId) => {
@@ -35,7 +34,7 @@ const NFTPage = () => {
             description: meta.description,
         }
         setFetchedItem(item)
-        console.log(item)
+        setAddress(addr)
     }
 
     const buyNFT = async (tokenId) => {
@@ -43,12 +42,10 @@ const NFTPage = () => {
 
             const provider = new ethers.providers.Web3Provider(window.ethereum);
             const signer = provider.getSigner();
-
-            //Pull the deployed contract instance
             let contract = new ethers.Contract(MarketplaceJSON.address, MarketplaceJSON.abi, signer);
             const salePrice = ethers.utils.parseUnits(fetchedItem.price, 'ether')
 
-            let transaction = await contract.executeSale(tokenId, { value: salePrice });
+            let transaction = await contract.executeSales(tokenId, { value: salePrice });
             await transaction.wait()
 
             Swal.fire({
@@ -88,8 +85,11 @@ const NFTPage = () => {
                         Seller: <span className="text-sm">{fetchedItem.seller}</span>
                     </div>
                     <div>
-                        {!address == fetchedItem.owner || !address == fetchedItem.seller?
-                            <button className="enableEthereumButton bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm" onClick={() => buyNFT(tokenId)}>Buy thNFTis </button>
+                        {console.log(address)}
+                        {console.log(fetchedItem.owner)}
+                        {console.log(fetchedItem.seller)}
+                        {address !== fetchedItem.owner && address != fetchedItem.seller ?
+                            <button className="enableEthereumButton bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm" onClick={() => buyNFT(slug)}>Buy this NFT </button>
                             : <div className="text-emerald-700">You are the owner of this NFT</div>
                         }
                     </div>

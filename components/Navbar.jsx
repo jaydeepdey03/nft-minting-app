@@ -4,7 +4,7 @@ import useContextFetch from "../hooks/useContextFetch";
 const Navbar = () => {
 
     const { connectWallet, account, switchNetwork, chainId } = useContextFetch()
-    console.log(account)
+    // console.log(account)
     return (
         <>
             <div className="flex space-x-10 text-white justify-between">

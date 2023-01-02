@@ -2,7 +2,6 @@ import { ethers } from "ethers"
 import MarketplaceJSON from '../utils/Marketplace.json'
 import { useState, useEffect } from "react"
 import NFT from "./NFT"
-import Link from 'next/link'
 import Spinner from "./Spinner"
 import useContextFetch from "../hooks/useContextFetch"
 
@@ -40,8 +39,8 @@ const NFTsection = () => {
 
     useEffect(() => {
        setLoading(true)
-        chainId === '0x13881' && getAllNFT()
-        setTimeout(() => {
+       chainId === '0x13881' && getAllNFT()
+       setTimeout(() => {
             setLoading(false)
         }, 2000);
     }, [chainId])
@@ -72,7 +71,7 @@ const NFTsection = () => {
 
             <div className="flex mt-5 justify-between flex-wrap max-w-screen-xl text-center">
                 {fetchedItem.map((value, index) => {
-                    return <NFT data={value} key={index}></NFT>;
+                    return <NFT data={value} key={index} loading={loading}></NFT>;
                 })}
             </div>
         </div>
